@@ -1,0 +1,71 @@
+Launcher for Go services accepting over9000 command-line flags.
+
+Reads parameters from config file and dumps then into command-line flags
+for the service to be launched.
+
+Usage:
+$ go get -u -a github.com/valyala/go-launcher
+$ go build github.com/valyala/go-launcher
+$ ./go-launcher -help
+
+Description.
+
+Suppose you have Go service, which accepts over9000 command-line flags.
+You may launch it with:
+
+  /path/to/service -flag1=value1 -flag2=value2 ... flag9000=value9000
+
+The following approach is better - to create run-file with the following
+contents:
+
+  /path/to/service \
+  	-flag1=value1 \
+  	-flag2=value2 \
+  	... \
+  	-flagN=valueN
+
+Now you can easily modify any flag and track flags' modifications via SCM.
+This approach has the following 'drawbacks':
+1. The first string contains path to the service executable.
+2. Each config line must have tab prefix and backslash suffix.
+3. Run-file syntax is shell-specific and can be broken under another shell.
+
+
+There is another 'smart' approach:
+
+  cat /path/to/config | xargs /path/to/service
+
+Where /path/to/config contains the following:
+
+-flag1=value1
+-flag2=value2
+...
+-flagN=valueN
+
+This approach eliminates aforementioned drawbacks, but has a problem -
+it doens't support comments.
+
+
+Go-launcher 'fixes' this problem:
+
+  /path/to/go-launcher -appPath=/path/to/service -config=path/to/config/relative/to/appPath
+
+Now /path/to/config/relative/to/appPath contains the following:
+
+# comment1
+flag1 = value1
+
+
+# empty lines above
+flag2 = value2
+...
+; commentX
+flagN = valueN
+
+# Since go-launcher changes services' working directory to appPath's directory,
+# you can use paths relative to appPath in config and inside your service.
+pathToData = "path/to/data/relative/to/appPath"
+
+So, go-launcher makes manageble configs for go services accepting over9000
+command-line flags.
+
