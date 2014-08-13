@@ -69,3 +69,4 @@ pathToData = "path/to/data/relative/to/appPath"
 So, go-launcher makes manageble configs for go services accepting over9000
 command-line flags.
 
+See also https://github.com/vharitonsky/iniflags .
